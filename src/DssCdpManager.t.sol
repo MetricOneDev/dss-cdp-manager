@@ -300,15 +300,15 @@ contract DssCdpManagerTest is DssDeployTestBase {
         wcoin.approve(address(coinJoin), 1 ether);
         coinJoin.join(manager.urns(cdp), 1 ether);
         manager.frob(cdp, 1 ether, 50 ether);
-        assertEq(vat.dai(manager.urns(cdp)), 50 ether * RAY);
-        assertEq(vat.dai(address(this)), 0);
+        assertEq(vat.stbl(manager.urns(cdp)), 50 ether * RAY);
+        assertEq(vat.stbl(address(this)), 0);
         manager.move(cdp, address(this), 50 ether * RAY);
-        assertEq(vat.dai(manager.urns(cdp)), 0);
-        assertEq(vat.dai(address(this)), 50 ether * RAY);
-        assertEq(dai.balanceOf(address(this)), 0);
-        vat.hope(address(daiJoin));
-        daiJoin.exit(address(this), 50 ether);
-        assertEq(dai.balanceOf(address(this)), 50 ether);
+        assertEq(vat.stbl(manager.urns(cdp)), 0);
+        assertEq(vat.stbl(address(this)), 50 ether * RAY);
+        assertEq(stbl.balanceOf(address(this)), 0);
+        vat.hope(address(stblJoin));
+        stblJoin.exit(address(this), 50 ether);
+        assertEq(stbl.balanceOf(address(this)), 50 ether);
     }
 
     function testFrobAllowed() public {
@@ -319,7 +319,7 @@ contract DssCdpManagerTest is DssDeployTestBase {
         coinJoin.join(manager.urns(cdp), 1 ether);
         manager.cdpAllow(cdp, address(user), 1);
         user.doFrob(manager, cdp, 1 ether, 50 ether);
-        assertEq(vat.dai(manager.urns(cdp)), 50 ether * RAY);
+        assertEq(vat.stbl(manager.urns(cdp)), 50 ether * RAY);
     }
 
     function testFailFrobNotAllowed() public {
@@ -339,7 +339,7 @@ contract DssCdpManagerTest is DssDeployTestBase {
         coinJoin.join(manager.urns(cdp), 1 ether);
         manager.frob(cdp, 1 ether, 50 ether);
         manager.frob(cdp, -int(1 ether), -int(50 ether));
-        assertEq(vat.dai(address(this)), 0);
+        assertEq(vat.stbl(address(this)), 0);
         assertEq(vat.gem("COIN", manager.urns(cdp)), 1 ether);
         assertEq(vat.gem("COIN", address(this)), 0);
         manager.flux(cdp, address(this), 1 ether);
